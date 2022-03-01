@@ -1,10 +1,11 @@
 import os
 import glob
 import gdown
+import sys
 from pathlib import Path
 import streamlit as st
-import numpy as np
-import pandas as pd
+#import numpy as np
+#import pandas as pd
 from streamlit_autorefresh import st_autorefresh
 import subprocess
 import seaborn as sns
@@ -130,7 +131,7 @@ drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefit
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
 if st.sidebar.button('Run model'):
-    subprocess.call(['python', model_dir,
+    subprocess.run([f"{sys.executable}", model_dir,
     '--sc_data', str(study),
     '--pretrain', 'saved/models/sc_encoder_ae.pkl',
     '-s', bulkmodel,
