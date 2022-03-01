@@ -124,9 +124,9 @@ drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefit
 
 
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
-
+model_dir = "./scmodel.py"
 if st.sidebar.button('Run model'):
-    subprocess.call(['python', '/Users/stefano.cardinale/scDEAL/scDEAL/scmodel.py',
+    subprocess.call(['python', model_dir,
     '--sc_data', str(study),
     '--pretrain', 'saved/models/sc_encoder_ae.pkl',
     '-s', bulkmodel,
