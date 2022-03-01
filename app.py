@@ -1,18 +1,15 @@
 import os
 import glob
 import gdown
-import requests
 from pathlib import Path
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
-#import pandas as pd
-#import numpy as np
 import subprocess
 import seaborn as sns
 import io
 from pdf2image import convert_from_path
 import scanpy as sc
-#import besca as bc
+
 from PIL import Image
 import matplotlib.pyplot as plt
 import plotly.figure_factory as ff
@@ -24,14 +21,6 @@ appsbasedir = os.path.dirname(os.path.realpath(__file__))
 
 stdout = io.StringIO()
 st.set_option('deprecation.showPyplotGlobalUse', False)
-
-# if not 'GSE117872_good_Data_cellinfo.txt' in os.listdir('data/GSE117872'):
-#     txt = st.warning("I am dowloading the missing data file")
-#     url = "https://drive.google.com/file/d/1EB4GRceNapwJmRnefK86jq50pUg-nsvj/view?usp=sharing"
-#     r = requests.get(url, allow_redirects=True)
-#     open("data/GSE117872/GSE117872_good_Data_cellinfo.txt", 'wb').write(r.content)
-#     del r
-#     txt.success("Data downloaded successfully!")
 
 # data download
 if not os.path.exists('./data'):
