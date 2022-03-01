@@ -163,10 +163,13 @@ if st.sidebar.button('Run model'):
     ])
     st.warning("Computation done")
 
-    list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
- 
-    latest_err = max(list_of_err, key=os.path.getctime)
+    list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
+    latest_file = max(list_of_files, key=os.path.getctime)
+    new_name = os.path.splitext(latest_file)[0] + "_" + str(drug) + ".h5ad"
+    os.rename(latest_file, new_name)
 
+    list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
+    latest_err = max(list_of_err, key=os.path.getctime)
     st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
 
 ...
@@ -183,16 +186,19 @@ for root, dirs, files in os.walk("saved/figures"):
 
 resultfile2 = st.sidebar.selectbox('Model performances', filelist2)
 
-resultfile = st.sidebar.selectbox('Predictions', filelist)
-
 if st.sidebar.button('REFRESH'):
     st_autorefresh(interval=1, limit=1)
-    
-    list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
-    latest_file = max(list_of_files, key=os.path.getctime)
-    new_name = os.path.splitext(latest_file)[0] + "_" + str(drug) + ".h5ad"
-    os.rename(latest_file, new_name)
 
+resultfile = st.sidebar.selectbox('Predictions', filelist)
+
+if st.sidebar.button('DELETE PREDICTIONS'):
+    directory = "./saved/adata"
+
+    files_in_directory = os.listdir(directory)
+    filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
+    for file in filtered_files:
+        path_to_file = os.path.join(directory, file)
+        os.remove(path_to_file)
 
 ######################
 # Page Title
