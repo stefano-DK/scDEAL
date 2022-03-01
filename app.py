@@ -37,9 +37,11 @@ if not os.path.exists('./data'):
 
 if not os.path.exists('./saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad'):
     gdown.download("https://drive.google.com/file/d/1jZj25AEaeE2kCwwbhqkPgm_Qr4miHztN/view?usp=sharing", output='./saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad', quiet=False, use_cookies=False, fuzzy=True)
+    st.write("Result Download finished")
 
 if not os.path.exists('./saved/models'):
     gdown.download_folder('https://drive.google.com/drive/folders/1HOldnGZ6ZL46bRej933AXf6JMcfV5Tjh?usp=sharing', output='./saved/models', quiet=False, use_cookies=False)
+    st.write("Model Downloads finished")
 
 
 def plot_confusion_matrix(cm):
