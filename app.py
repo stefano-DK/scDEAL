@@ -3,6 +3,8 @@ import glob
 import gdown
 from pathlib import Path
 import streamlit as st
+import numpy as np
+import pandas as pd
 from streamlit_autorefresh import st_autorefresh
 import subprocess
 import seaborn as sns
