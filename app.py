@@ -87,6 +87,24 @@ def plot_confusion_matrix(cm):
     fig['data'][0]['showscale'] = True
     return fig
 
+# def LastNlines(fname, N):
+#     # opening file using with() method
+#     # so that file get closed
+#     # after completing work
+#     with open(fname) as file:
+         
+#         # loop to read iterate
+#         # last n lines and print it
+#         for line in (file.readlines() [-N:]):
+#             print(line, end ='')
+
+def LastNlines(fname, N):
+    a_file = open(fname, "r")
+    lines = a_file.readlines()
+    last_lines = lines[-N:]
+    a_file.close()
+    return last_lines
+
 ######################
 # Page Title
 ######################
@@ -141,8 +159,16 @@ if st.sidebar.button('Run model'):
     '--bulk_h_dims', "256,256",
     '--bottleneck', '256', 
     '--predictor_h_dims', "128,64",
-#    '-l', 'out.log'
+    '-l', 'out.log'
     ])
+    st.warning("Computation done")
+
+    list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
+ 
+    latest_err = max(list_of_err, key=os.path.getctime)
+
+    st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
+
 ...
 #range1 = st.sidebar.slider('N genes', 0, 5000,(0,5000))
 #st.write('Range:', range1)
