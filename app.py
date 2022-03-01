@@ -115,6 +115,7 @@ st.sidebar.header('User Input Features')
 filelist=[]
 for root, dirs, files in os.walk("saved/adata/"):
       for file in files:
+          if file.endswith(".h5ad"):
              filename=os.path.join(root, file)
              filelist.append(Path(filename).stem)
 #st.sidebar.write(filelist)
