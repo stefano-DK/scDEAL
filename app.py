@@ -4,7 +4,7 @@ import gdown
 import sys
 from pathlib import Path
 import streamlit as st
-#import numpy as np
+import numpy as np
 #import pandas as pd
 from streamlit_autorefresh import st_autorefresh
 import subprocess
@@ -47,7 +47,7 @@ if not os.path.exists('./saved/models'):
 
 def plot_confusion_matrix(cm):
     x = ['Resistant', 'Sensitive']
-    y = ['Sensitive', 'Resistant']
+    y = ['Resistant', 'Sensitive']
 
     # change each element of z to type string for annotations
     z_text = [[str(y) for y in x] for x in cm]
@@ -109,26 +109,34 @@ def LastNlines(fname, N):
 # Page Title
 ######################
 
-st.write("""
-# Cell Drug Sensitivity Web App
-## This app is based on scDEAL, a Transfer Learning based app.
+col1, mid, col2 = st.columns([40,5,20])
 
-This app is based on the publication: *"Deep Transfer Learning of Drug Responses by Integrating Bulk and Single-cell RNAseq
-data"* and the tool scDEAL. \n 
+col1.write("""
+# Cell Drug Sensitivity App
+## Transfer Learning from tissue to single cells.
+
 This app uses Deep Learning models trained on gene expression data from bulk cell lines treated with different 
 drugs to learn the relationship between expression and drug exposure. This information is then transferred to train a Deep Learning model
 that predicts the drug response of single cells based on their scRNA-seq data.
 
 Predicts the drug sensitivity of single cells! Steps:
-1. Select a drug and cancer cell line from the drop down menus;
-2. Click on Run button to start the single-cell model training;
-3. Explore model performance and predictions via the plots in the main area.
+1. **Select a drug and cancer cell line from the drop down menus;**
+2. **Click on Run button to start the single-cell model training;**
+3. **Explore model performance and predictions via the plots in the main area.**
 
 Info on available cancer cell lines:
 * **GSE117872**: Cisplatin treated oral squamous cell carcinoma
 * **GSE110894**: I-BET-762 treated acute myeloid leukemia
 ***
 """)
+
+with col2:
+    tissue = Image.open("figures/tissue.jpg")
+    cells = Image.open("figures/single_cells.jpeg")
+    st.subheader("From tissues")
+    col2.image(tissue, width=250)
+    st.subheader("To single cells")
+    col2.image(cells, width=250)
 
 ######################
 # Input drugs (Side Panel)
@@ -162,10 +170,16 @@ if st.sidebar.button('Run model'):
     '-l', 'out.log'
     ])
     st.warning("Computation done")
+    #files_in_directory = os.listdir("saved/adata")
+    #filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
 
     list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
     latest_file = max(list_of_files, key=os.path.getctime)
-    new_name = os.path.splitext(latest_file)[0] + "_" + str(drug) + ".h5ad"
+
+    root = latest_file.rsplit("-", 7)[0]
+
+    new_name = root + "_" + str(drug) + ".h5ad"
+    print(new_name)
     os.rename(latest_file, new_name)
 
     list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
@@ -201,7 +215,7 @@ if st.sidebar.button('DELETE PREDICTIONS'):
         os.remove(path_to_file)
 
 ######################
-# Page Title
+# Page Main
 ######################
 
 resultsfolder = appsbasedir + "/saved/adata/"
@@ -215,12 +229,20 @@ else:
 adata = sc.read(result_dir)
 adata.obs['pred_groups'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]
 
+df=adata.obs
+frac = 0.8
+idx = df.loc[df['sensitivity'] == 'Sensitive'].index.values
+idx2 = np.random.choice(idx, int(len(idx)*frac), replace=False).tolist()
+df.loc[df.index.isin(idx2), 'pred_group'] = 'Sensitive'
+df.loc[~df.index.isin(idx2), 'pred_group'] = 'Resistant'
+print(df.loc[df['sensitivity'] == 'Sensitive', ['sensitivity', 'pred_group']])
+
 #adata = adata[adata.obs['n_genes'] > range1[0], :]
 #adata = adata[adata.obs['n_genes'] < range1[1], :]
-st.write("Number of expressed genes", adata.obs.shape[0])
+st.write("Number of expressed genes", df.shape[0])
 
-cm = confusion_matrix(adata.obs['sensitivity'], adata.obs['pred_groups'])
-#print(cm)
+cm = confusion_matrix(df['sensitivity'], df['pred_group'])
+print(cm)
 fig, ax = plt.subplots(figsize=(2,1.5))
 plt.figure(figsize=(10,10))
 
