@@ -274,19 +274,22 @@ with col1:
     st.markdown('##')
     st.markdown('##')
     st.write("""
-        ### Heatmap of the confusion matrix of model predictions compared to true labels
-        """)
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')    
-    st.write("""
         ### Receiver operating characteristic (ROC) curve showing how the bulk model performs at all classification thresholds. 
         ### At the top is the accuracy of the model.
         """)
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.write("""
+    ### Heatmap of the confusion matrix of model predictions for the selected drug and cancer cell line
+    """)    
+
 
 with col2:
-    st.write(plot_confusion_matrix(cm), width=5)
     st.image(image, width=500)
+    st.markdown('##')
+    st.markdown('##')
+    st.write(plot_confusion_matrix(cm), width=5)
