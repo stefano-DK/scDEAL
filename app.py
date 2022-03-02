@@ -56,10 +56,10 @@ def plot_confusion_matrix(cm):
     fig = ff.create_annotated_heatmap(cm, x=x, y=y, annotation_text=z_text, colorscale='ylorbr')
 
     # add title
-    fig.update_layout(title_text='<i><b>Confusion matrix</b></i>',
-                  #xaxis = dict(title='x'),
-                  #yaxis = dict(title='x')
-                 )
+    # fig.update_layout(title_text='<i><b>Confusion matrix</b></i>',
+    #               #xaxis = dict(title='x'),
+    #               #yaxis = dict(title='x')
+    #              )
 
     # add custom xaxis title
     fig.add_annotation(dict(font=dict(color="white",size=16),
@@ -72,7 +72,7 @@ def plot_confusion_matrix(cm):
 
     # add custom yaxis title
     fig.add_annotation(dict(font=dict(color="white",size=16),
-                        x=-0.35,
+                        x=-0.25,
                         y=0.5,
                         showarrow=False,
                         text="True value",
@@ -268,28 +268,24 @@ image = Image.open(image_dir)
 # First row of images and text
 ######################
 
-col1, mid, col2 = st.columns([10,1,20])
+col1, buffer, col2 = st.columns([20,1,25])
 with col1:
-    st.markdown('##')
-    st.markdown('##')
     st.markdown('##')
     st.write("""
         ### Receiver operating characteristic (ROC) curve showing how the bulk model performs at all classification thresholds. 
         ### At the top is the accuracy of the model.
         """)
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
+with col2:
+    st.image(image, width=500)
+
+
+col1, buffer, col2 = st.columns([10,1,25])
+with col1:
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')
     st.write("""
     ### Heatmap of the confusion matrix of model predictions for the selected drug and cancer cell line
     """)    
-
-
 with col2:
-    st.image(image, width=500)
-    st.markdown('##')
-    st.markdown('##')
     st.write(plot_confusion_matrix(cm), width=5)
