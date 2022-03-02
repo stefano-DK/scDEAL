@@ -282,12 +282,6 @@ with col1:
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')    
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
     st.write("""
         ### Receiver operating characteristic (ROC) curve showing how the bulk model performs at all classification thresholds. 
         ### At the top is the accuracy of the model.
