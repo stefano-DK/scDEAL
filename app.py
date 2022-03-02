@@ -151,8 +151,8 @@ for root, dirs, files in os.walk("saved/adata/"):
              filelist.append(Path(filename).stem)
 #st.sidebar.write(filelist)
 study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872"])
-drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefitinib', 'I-BET-762','Ibrutinib','JQ1','Tamoxifen','Trametinib'])
-
+#drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefitinib', 'I-BET-762','Ibrutinib','JQ1','Tamoxifen','Trametinib'])
+drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen'])
 
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
