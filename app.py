@@ -62,7 +62,7 @@ def plot_confusion_matrix(cm):
                  )
 
     # add custom xaxis title
-    fig.add_annotation(dict(font=dict(color="black",size=16),
+    fig.add_annotation(dict(font=dict(color="white",size=16),
                         x=0.5,
                         y=-0.15,
                         showarrow=False,
@@ -71,7 +71,7 @@ def plot_confusion_matrix(cm):
                         yref="paper"))
 
     # add custom yaxis title
-    fig.add_annotation(dict(font=dict(color="black",size=16),
+    fig.add_annotation(dict(font=dict(color="white",size=16),
                         x=-0.35,
                         y=0.5,
                         showarrow=False,
