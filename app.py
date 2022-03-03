@@ -156,6 +156,7 @@ drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen'])
 
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
+
 if st.sidebar.button('Run model'):
     subprocess.run([f"{sys.executable}", model_dir,
     '--sc_data', str(study),
