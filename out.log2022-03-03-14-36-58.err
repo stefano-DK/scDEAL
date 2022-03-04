@@ -1,0 +1,32 @@
+/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/scanpy/tools/_rank_genes_groups.py:417: RuntimeWarning: overflow encountered in expm1
+  foldchanges = (self.expm1_func(mean_group) + 1e-9) / (
+/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/scanpy/tools/_rank_genes_groups.py:418: RuntimeWarning: overflow encountered in expm1
+  self.expm1_func(mean_rest) + 1e-9
+/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/scanpy/tools/_rank_genes_groups.py:418: RuntimeWarning: invalid value encountered in true_divide
+  self.expm1_func(mean_rest) + 1e-9
+/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/scanpy/tools/_rank_genes_groups.py:421: RuntimeWarning: divide by zero encountered in log2
+  foldchanges[global_indices]
+/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/scanpy/preprocessing/_normalization.py:155: UserWarning: Revieved a view of an AnnData. Making a copy.
+  view_to_actual(adata)
+/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/sklearn/utils/validation.py:72: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples, ), for example using ravel().
+  return f(**kwargs)
+Traceback (most recent call last):
+  File "./scmodel.py", line 452, in <module>
+    run_main(args)
+  File "./scmodel.py", line 365, in run_main
+    save_path=target_model_path+"_DaNN.pkl")
+  File "/Users/stefano.cardinale/scDEAL/scDEAL/trainers.py", line 605, in train_DaNN_model
+    list_src, list_tar = list(enumerate(source_loader[phase])), list(enumerate(target_loader[phase]))
+  File "/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 521, in __next__
+    data = self._next_data()
+  File "/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/torch/utils/data/dataloader.py", line 561, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/torch/utils/data/_utils/fetch.py", line 49, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/torch/utils/data/_utils/fetch.py", line 49, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/torch/utils/data/dataset.py", line 261, in __getitem__
+    return tuple(tensor[index] for tensor in self.tensors)
+  File "/Users/stefano.cardinale/opt/anaconda3/envs/scDEAL/lib/python3.7/site-packages/torch/utils/data/dataset.py", line 261, in <genexpr>
+    return tuple(tensor[index] for tensor in self.tensors)
+KeyboardInterrupt

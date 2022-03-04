@@ -1,0 +1,47 @@
+2022-03-03 15:59:18,359 - ./scmodel.py[line:99] - INFO: Namespace(VAErepram=1, batch_id='HN137', batch_size=200, bottleneck=256, bulk_data='data/GDSC2_expression.csv', bulk_h_dims='256,256', bulk_model_path='saved/models/bulk_predictor_AECisplatin.pkl', cluster_res=0.3, dimreduce='AE', drug='Cisplatin', epochs=500, freeze_pretrain=0, label='data/GDSC2_label_9drugs_binary.csv', load_sc_model=0, logging_file='out.log', lr=0.01, max_n_genes=20000, min_c=3, min_g=200, min_n_genes=0, missing_value=1, mmd_GAMMA=1000, mmd_weight=0.25, percent_mito=100, predictor_h_dims='128,64', pretrain='saved/models/sc_encoder_ae.pkl', sc_data='GSE117872', sc_h_dims='512,256', sc_model_path='saved/models/sc_predictor', test_size=0.2, valid_size=0.2, var_genes_disp=0)
+2022-03-03 15:59:18,360 - ./scmodel.py[line:100] - INFO: Start at 1646319558.359524
+2022-03-03 15:59:29,065 - ./scmodel.py[line:187] - INFO: cpu
+2022-03-03 15:59:38,245 - ./scmodel.py[line:265] - INFO: Target encoder structure is: 
+2022-03-03 15:59:38,245 - ./scmodel.py[line:266] - INFO: AEBase(
+  (encoder): Sequential(
+    (0): Sequential(
+      (0): Linear(in_features=7384, out_features=256, bias=True)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): Dropout(p=0.3, inplace=False)
+    )
+    (1): Sequential(
+      (0): Linear(in_features=256, out_features=256, bias=True)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): Dropout(p=0.3, inplace=False)
+    )
+  )
+  (bottleneck): Linear(in_features=256, out_features=256, bias=True)
+  (decoder_input): Linear(in_features=256, out_features=256, bias=True)
+  (decoder): Sequential(
+    (0): Sequential(
+      (0): Linear(in_features=256, out_features=256, bias=True)
+      (1): BatchNorm1d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): Dropout(p=0.3, inplace=False)
+    )
+  )
+  (final_layer): Sequential(
+    (0): Linear(in_features=256, out_features=7384, bias=True)
+    (1): Sigmoid()
+  )
+)
+2022-03-03 15:59:38,310 - ./scmodel.py[line:291] - INFO: Load pretrained source model from: saved/models/bulk_predictor_AECisplatin.pkl
+2022-03-03 15:59:38,314 - ./scmodel.py[line:306] - INFO: Load pretrained target encoder from saved/models/sc_encoder_ae.pkl
+2022-03-03 15:59:38,426 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:589] - INFO: Epoch 0/499
+2022-03-03 15:59:38,426 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:590] - INFO: ----------
+2022-03-03 15:59:39,105 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:667] - INFO: train Loss: 0.31752889. Learning rate = 0.01
+2022-03-03 15:59:39,157 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:667] - INFO: val Loss: 0.46312454. Learning rate = 0.01
+2022-03-03 15:59:39,157 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:589] - INFO: Epoch 1/499
+2022-03-03 15:59:39,157 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:590] - INFO: ----------
+2022-03-03 15:59:39,880 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:667] - INFO: train Loss: 0.31607523. Learning rate = 0.01
+2022-03-03 15:59:39,933 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:667] - INFO: val Loss: 0.45784038. Learning rate = 0.01
+2022-03-03 15:59:39,933 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:589] - INFO: Epoch 2/499
+2022-03-03 15:59:39,933 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:590] - INFO: ----------
+2022-03-03 15:59:40,564 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:667] - INFO: train Loss: 0.31546661. Learning rate = 0.01
+2022-03-03 15:59:40,620 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:667] - INFO: val Loss: 0.44758621. Learning rate = 0.01
+2022-03-03 15:59:40,620 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:589] - INFO: Epoch 3/499
+2022-03-03 15:59:40,620 - /Users/stefano.cardinale/scDEAL/scDEAL/trainers.py[line:590] - INFO: ----------

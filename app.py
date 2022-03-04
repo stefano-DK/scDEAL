@@ -12,11 +12,18 @@ import seaborn as sns
 import io
 from pdf2image import convert_from_path
 import scanpy as sc
-
+from multiprocessing import Process
 from PIL import Image
 import matplotlib.pyplot as plt
 import plotly.figure_factory as ff
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+import time
+import psutil
+from streamlit_autorefresh import st_autorefresh
+from streamlit.script_run_context import add_script_run_ctx
+from streamlit.server.server import Server
+from streamlit.legacy_caching.hashing import _CodeHasher
+
 #import plotly.express as px
 #from sklearn.metrics import accuracy_score
 st.set_page_config(layout="wide")
@@ -24,6 +31,113 @@ appsbasedir = os.path.dirname(os.path.realpath(__file__))
 
 stdout = io.StringIO()
 st.set_option('deprecation.showPyplotGlobalUse', False)
+
+class _SessionState:
+
+    def __init__(self, session, hash_funcs):
+        """Initialize SessionState instance."""
+        self.__dict__["_state"] = {
+            "data": {},
+            "hash": None,
+            "hasher": _CodeHasher(hash_funcs),
+            "is_rerun": False,
+            "session": session,
+        }
+
+    def __call__(self, **kwargs):
+        """Initialize state data once."""
+        for item, value in kwargs.items():
+            if item not in self._state["data"]:
+                self._state["data"][item] = value
+
+    def __getitem__(self, item):
+        """Return a saved state value, None if item is undefined."""
+        return self._state["data"].get(item, None)
+
+    def __getattr__(self, item):
+        """Return a saved state value, None if item is undefined."""
+        return self._state["data"].get(item, None)
+
+    def __setitem__(self, item, value):
+        """Set state value."""
+        self._state["data"][item] = value
+
+    def __setattr__(self, item, value):
+        """Set state value."""
+        self._state["data"][item] = value
+
+    def clear(self):
+        """Clear session state and request a rerun."""
+        self._state["data"].clear()
+        self._state["session"].request_rerun()
+
+    def sync(self):
+        """Rerun the app with all state values up to date from the beginning to fix rollbacks."""
+
+        # Ensure to rerun only once to avoid infinite loops
+        # caused by a constantly changing state value at each run.
+        #
+        # Example: state.value += 1
+        if self._state["is_rerun"]:
+            self._state["is_rerun"] = False
+
+        elif self._state["hash"] is not None:
+            if self._state["hash"] != self._state["hasher"].to_bytes(self._state["data"], None):
+                self._state["is_rerun"] = True
+                self._state["session"].request_rerun()
+
+        self._state["hash"] = self._state["hasher"].to_bytes(self._state["data"], None)
+
+def _get_session():
+    session_id = add_script_run_ctx().streamlit_script_run_ctx.session_id
+    session_info = Server.get_current()._get_session_info(session_id)
+
+    if session_info is None:
+        raise RuntimeError("Couldn't get your Streamlit Session object.")
+
+    return session_info.session
+
+def _get_state(hash_funcs=None):
+    session = _get_session()
+
+    if not hasattr(session, "_custom_session_state"):
+        session._custom_session_state = _SessionState(session, hash_funcs)
+
+    return session._custom_session_state
+
+## My functions
+
+state = _get_state()
+
+def job():
+    subprocess.run([f"{sys.executable}", model_dir,
+    '--sc_data', str(study),
+    '--pretrain', 'saved/models/sc_encoder_ae.pkl',
+    '-s', bulkmodel,
+    '--dimreduce', 'AE', 
+    '--sc_model_path', 'saved/models/sc_predictor',
+    '--drug', str(drug),
+    '--bulk_h_dims', "256,256",
+    '--bottleneck', '256', 
+    '--predictor_h_dims', "128,64",
+    '-l', 'out.log'
+    ])
+    st.warning("Computation done")
+    #files_in_directory = os.listdir("saved/adata")
+    #filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
+
+    list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
+    latest_file = max(list_of_files, key=os.path.getctime)
+
+    root = latest_file.rsplit("-", 7)[0]
+
+    new_name = root + "_" + str(drug) + ".h5ad"
+    print(new_name)
+    os.rename(latest_file, new_name)
+
+    list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
+    latest_err = max(list_of_err, key=os.path.getctime)
+    st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
 
 # data download
 if not os.path.exists('./data'):
@@ -105,6 +219,7 @@ def LastNlines(fname, N):
     a_file.close()
     return last_lines
 
+
 ######################
 # Page Title
 ######################
@@ -157,35 +272,21 @@ drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen'])
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
 
-if st.sidebar.button('Run model'):
-    subprocess.run([f"{sys.executable}", model_dir,
-    '--sc_data', str(study),
-    '--pretrain', 'saved/models/sc_encoder_ae.pkl',
-    '-s', bulkmodel,
-    '--dimreduce', 'AE', 
-    '--sc_model_path', 'saved/models/sc_predictor',
-    '--drug', str(drug),
-    '--bulk_h_dims', "256,256",
-    '--bottleneck', '256', 
-    '--predictor_h_dims', "128,64",
-    '-l', 'out.log'
-    ])
-    st.warning("Computation done")
-    #files_in_directory = os.listdir("saved/adata")
-    #filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
+st.sidebar.title("Controls")
+start = st.sidebar.button("Start")
+stop = st.sidebar.button("Stop")
 
-    list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
-    latest_file = max(list_of_files, key=os.path.getctime)
+if start:
+    p = Process(target=job)
+    p.start()
+    state.pid = p.pid
+    st.write("Started process with pid:", state.pid)
 
-    root = latest_file.rsplit("-", 7)[0]
-
-    new_name = root + "_" + str(drug) + ".h5ad"
-    print(new_name)
-    os.rename(latest_file, new_name)
-
-    list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
-    latest_err = max(list_of_err, key=os.path.getctime)
-    st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
+if stop:
+    p = psutil.Process(state.pid)
+    p.terminate()
+    st.write("Stopped process with pid:", state.pid)
+    state.pid = None
 
 ...
 #range1 = st.sidebar.slider('N genes', 0, 5000,(0,5000))
