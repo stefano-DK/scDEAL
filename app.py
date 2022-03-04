@@ -56,10 +56,10 @@ def plot_confusion_matrix(cm):
     fig = ff.create_annotated_heatmap(cm, x=x, y=y, annotation_text=z_text, colorscale='ylorbr')
 
     # add title
-    fig.update_layout(title_text='<i><b>Confusion matrix</b></i>',
-                  #xaxis = dict(title='x'),
-                  #yaxis = dict(title='x')
-                 )
+    # fig.update_layout(title_text='<i><b>Confusion matrix</b></i>',
+    #               #xaxis = dict(title='x'),
+    #               #yaxis = dict(title='x')
+    #              )
 
     # add custom xaxis title
     fig.add_annotation(dict(font=dict(color="white",size=16),
@@ -175,17 +175,17 @@ if st.sidebar.button('Run model'):
 
     list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
     latest_file = max(list_of_files, key=os.path.getctime)
-
-    root = latest_file.rsplit("-", 7)[0]
-
-    new_name = root + "_" + str(drug) + ".h5ad"
-    print(new_name)
-    os.rename(latest_file, new_name)
+    first_file = appsbasedir + "/saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad"
+    if latest_file != first_file:
+        root = latest_file.rsplit("-", 7)[0]
+        root2= root.rsplit("2022", 1)[0]
+        new_name = root2 + "_" + str(drug) + ".h5ad"
+        os.rename(latest_file, new_name)
 
     list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
     latest_err = max(list_of_err, key=os.path.getctime)
     st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
-
+    
 ...
 #range1 = st.sidebar.slider('N genes', 0, 5000,(0,5000))
 #st.write('Range:', range1)
@@ -235,14 +235,14 @@ idx = df.loc[df['sensitivity'] == 'Sensitive'].index.values
 idx2 = np.random.choice(idx, int(len(idx)*frac), replace=False).tolist()
 df.loc[df.index.isin(idx2), 'pred_group'] = 'Sensitive'
 df.loc[~df.index.isin(idx2), 'pred_group'] = 'Resistant'
-print(df.loc[df['sensitivity'] == 'Sensitive', ['sensitivity', 'pred_group']])
+#print(df.loc[df['sensitivity'] == 'Sensitive', ['sensitivity', 'pred_group']])
 
 #adata = adata[adata.obs['n_genes'] > range1[0], :]
 #adata = adata[adata.obs['n_genes'] < range1[1], :]
 st.write("Number of expressed genes", df.shape[0])
 
 cm = confusion_matrix(df['sensitivity'], df['pred_group'])
-print(cm)
+
 fig, ax = plt.subplots(figsize=(2,1.5))
 plt.figure(figsize=(10,10))
 
@@ -277,8 +277,11 @@ with col1:
         ### Receiver operating characteristic (ROC) curve showing how the bulk model performs at all classification thresholds. 
         ### At the top is the accuracy of the model.
         """)
-    st.markdown('##')
-    st.markdown('##')
+with col2:
+    st.image(image, width=500)
+
+col1, mid, col2 = st.columns([5,2,20])
+with col1:
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')
@@ -287,9 +290,6 @@ with col1:
     ### Heatmap of the confusion matrix of model predictions for the selected drug and cancer cell line
     """)    
 
-
 with col2:
-    st.image(image, width=500)
-    st.markdown('##')
-    st.markdown('##')
+
     st.write(plot_confusion_matrix(cm), width=5)
