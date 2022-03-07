@@ -163,19 +163,20 @@ drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen'])
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
 if st.sidebar.button('Run model'):
-    subprocess.run([f"{sys.executable}", model_dir,
-    '--sc_data', str(study),
-    '--pretrain', 'saved/models/sc_encoder_ae.pkl',
-    '-s', bulkmodel,
-    '--dimreduce', 'AE', 
-    '--sc_model_path', 'saved/models/sc_predictor',
-    '--drug', str(drug),
-    '--bulk_h_dims', "256,256",
-    '--bottleneck', '256', 
-    '--predictor_h_dims', "128,64",
-    '-l', 'out.log'
-    ])
-    st.warning("Computation done")
+    with st.spinner('Wait for the computation to finish'):
+        subprocess.run([f"{sys.executable}", model_dir,
+        '--sc_data', str(study),
+        '--pretrain', 'saved/models/sc_encoder_ae.pkl',
+        '-s', bulkmodel,
+        '--dimreduce', 'AE', 
+        '--sc_model_path', 'saved/models/sc_predictor',
+        '--drug', str(drug),
+        '--bulk_h_dims', "256,256",
+        '--bottleneck', '256', 
+        '--predictor_h_dims', "128,64",
+        '-l', 'out.log'
+        ])
+    #st.warning("Computation done")
     #files_in_directory = os.listdir("saved/adata")
     #filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
 
@@ -188,9 +189,9 @@ if st.sidebar.button('Run model'):
         new_name = root2 + "_" + str(drug) + ".h5ad"
         os.rename(latest_file, new_name)
 
-    list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
-    latest_err = max(list_of_err, key=os.path.getctime)
-    st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
+    #list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
+    #latest_err = max(list_of_err, key=os.path.getctime)
+    #st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
     
 ...
 #range1 = st.sidebar.slider('N genes', 0, 5000,(0,5000))
