@@ -237,11 +237,8 @@ if str(resultfile) is None:
 else:
     result_dir=appsbasedir + "/saved/adata/" + str(resultfile) + '.h5ad'
 
-if result_dir:
-    adata = sc.read(result_dir)
-    adata.obs['pred_groups'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]
-else:
-    st.error("The file is being downloaded")
+adata = sc.read(result_dir)
+adata.obs['pred_groups'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]
 
 df=adata.obs
 frac = 0.8
