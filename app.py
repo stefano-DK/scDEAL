@@ -189,7 +189,7 @@ if st.sidebar.button('Run model'):
         new_name = root2 + "_" + str(drug) + ".h5ad"
         os.rename(latest_file, new_name)
     
-    st_autorefresh(interval=1, limit=1)
+        st_autorefresh(interval=5, limit=2)
 
     #list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
     #latest_err = max(list_of_err, key=os.path.getctime)
