@@ -24,6 +24,7 @@ appsbasedir = os.path.dirname(os.path.realpath(__file__))
 
 stdout = io.StringIO()
 st.set_option('deprecation.showPyplotGlobalUse', False)
+first_file = appsbasedir + "/saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad"
 
 # data download
 if not os.path.exists('./data'):
@@ -36,9 +37,14 @@ if not os.path.exists('./data'):
 
     subprocess.Popen(['mv data/other/*.* data && rm -r data/other'], shell=True)
 
-if not os.path.exists('./saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad'):
+if not os.path.exists('./saved/adata/GSE110894_I-BET-762.h5ad'):
     gdown.download("https://drive.google.com/file/d/1jZj25AEaeE2kCwwbhqkPgm_Qr4miHztN/view?usp=sharing", output='./saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad', quiet=False, use_cookies=False, fuzzy=True)
     st.warning("Result Download finished")
+    
+    root = first_file.rsplit("-", 7)[0]
+    root2= root.rsplit("2022", 1)[0]
+    new_name = root2 + '_I-BET-762.h5ad'
+    os.rename(first_file, new_name)
 
 if not os.path.exists('./saved/models'):
     gdown.download_folder('https://drive.google.com/drive/folders/1HOldnGZ6ZL46bRej933AXf6JMcfV5Tjh?usp=sharing', output='./saved/models', quiet=False, use_cookies=False)
@@ -175,7 +181,7 @@ if st.sidebar.button('Run model'):
 
     list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
     latest_file = max(list_of_files, key=os.path.getctime)
-    first_file = appsbasedir + "/saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad"
+    
     if latest_file != first_file:
         root = latest_file.rsplit("-", 7)[0]
         root2= root.rsplit("2022", 1)[0]
@@ -211,8 +217,9 @@ if st.sidebar.button('DELETE PREDICTIONS'):
     files_in_directory = os.listdir(directory)
     filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
     for file in filtered_files:
-        path_to_file = os.path.join(directory, file)
-        os.remove(path_to_file)
+        if file != 'GSE110894_I-BET-762.h5ad':
+            path_to_file = os.path.join(directory, file)
+            os.remove(path_to_file)
 
 ######################
 # Page Main
@@ -221,13 +228,16 @@ if st.sidebar.button('DELETE PREDICTIONS'):
 resultsfolder = appsbasedir + "/saved/adata/"
 
 if str(resultfile) is None:
-    resultfile="GSE1108942022-02-24-10-55-33_I-BET-762.h5ad"
+    resultfile="GSE110894_I-BET-762.h5ad"
     result_dir=appsbasedir + "/saved/adata/" + resultfile
 else:
     result_dir=appsbasedir + "/saved/adata/" + str(resultfile) + '.h5ad'
 
-adata = sc.read(result_dir)
-adata.obs['pred_groups'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]
+if result_dir:
+    adata = sc.read(result_dir)
+    adata.obs['pred_groups'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]
+else:
+    st.error("The file is being downloaded")
 
 df=adata.obs
 frac = 0.8
