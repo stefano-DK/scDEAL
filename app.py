@@ -223,7 +223,7 @@ if st.sidebar.button('DELETE PREDICTIONS'):
         if file != 'GSE110894_I-BET-762.h5ad':
             path_to_file = os.path.join(directory, file)
             os.remove(path_to_file)
-    st_autorefresh(interval=1, limit=1)
+    st_autorefresh(interval=5, limit=2)
 
 ######################
 # Page Main
