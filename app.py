@@ -188,6 +188,8 @@ if st.sidebar.button('Run model'):
         root2= root.rsplit("2022", 1)[0]
         new_name = root2 + "_" + str(drug) + ".h5ad"
         os.rename(latest_file, new_name)
+    
+    st_autorefresh(interval=1, limit=1)
 
     #list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
     #latest_err = max(list_of_err, key=os.path.getctime)
@@ -207,8 +209,8 @@ for root, dirs, files in os.walk("saved/figures"):
 
 resultfile2 = st.sidebar.selectbox('Model performances', filelist2)
 
-if st.sidebar.button('REFRESH'):
-    st_autorefresh(interval=1, limit=1)
+# if st.sidebar.button('REFRESH'):
+#     st_autorefresh(interval=1, limit=1)
 
 resultfile = st.sidebar.selectbox('Predictions', filelist)
 
@@ -221,6 +223,7 @@ if st.sidebar.button('DELETE PREDICTIONS'):
         if file != 'GSE110894_I-BET-762.h5ad':
             path_to_file = os.path.join(directory, file)
             os.remove(path_to_file)
+    st_autorefresh(interval=1, limit=1)
 
 ######################
 # Page Main
