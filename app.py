@@ -87,7 +87,7 @@ def plot_confusion_matrix(cm):
                         yref="paper"))
 
     # adjust margins to make room for yaxis title
-    fig.update_layout(margin=dict(t=50, l=10), width=530)
+    fig.update_layout(margin=dict(t=5, l=10), width=500)
 
     # add colorbar
     fig['data'][0]['showscale'] = True
@@ -139,9 +139,9 @@ Info on available cancer cell lines:
 with col2:
     tissue = Image.open("figures/tissue.jpg")
     cells = Image.open("figures/single_cells.jpeg")
-    st.subheader("From tissues")
+    st.subheader("From tissues...")
     col2.image(tissue, width=250)
-    st.subheader("To single cells")
+    st.subheader("... to single cells")
     col2.image(cells, width=250)
 
 ######################
@@ -279,15 +279,16 @@ image = Image.open(image_dir)
 # First row of images and text
 ######################
 
-col1, mid, col2 = st.columns([5,10,10])
+col1, col2 = st.columns([12,20])
 with col1:
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
+    # st.markdown('##')
+    # st.markdown('##')
+    # st.markdown('##')
     st.write("""
-        ### Receiver operating characteristic (ROC) curve and its area (top).
+        ### ROC curve with AUC value (top).
         """)
-with mid:
+    
+    st.markdown('##')
     st.image(image, width=500)
 with col2:
     st.markdown('##')
@@ -298,27 +299,25 @@ with col2:
         This curve plots two parameters:
         * True Positive Rate
         * False Positive Rate
+
+        The bigger is the Area Under the Curve (AUC), the better the model predicts.
         """)
 
 st.markdown('##')
-st.markdown('##')
-
-col1, mid, col2 = st.columns([5,10,10])
+col1, col2 = st.columns([11,18])
 with col1:
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
     st.write("""
     ### Confusion matrix
-    """)    
-
-with mid:
+    """)
+    st.markdown('##')
     st.write(plot_confusion_matrix(cm))
 with col2:
     st.markdown('##')
     st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
     st.write("""
-    A confusion matrix is a summary of prediction results on a classification problem.
-    The number of correct and incorrect predictions are summarized with count values and broken down by each class. 
+    * A confusion matrix is a summary of prediction results on a classification problem. The number of correct and incorrect predictions are summarized with count values and broken down by each class. \n
+    * A perfect model would classify all Resistant labels as Resistant and all Sensitive labels as Sensitive.
     """) 
