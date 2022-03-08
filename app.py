@@ -78,7 +78,7 @@ def plot_confusion_matrix(cm):
 
     # add custom yaxis title
     fig.add_annotation(dict(font=dict(color="white",size=16),
-                        x=-0.35,
+                        x=-0.15,
                         y=0.5,
                         showarrow=False,
                         text="True value",
@@ -87,7 +87,7 @@ def plot_confusion_matrix(cm):
                         yref="paper"))
 
     # adjust margins to make room for yaxis title
-    fig.update_layout(margin=dict(t=50, l=200))
+    fig.update_layout(margin=dict(t=50, l=10), width=530)
 
     # add colorbar
     fig['data'][0]['showscale'] = True
@@ -279,28 +279,46 @@ image = Image.open(image_dir)
 # First row of images and text
 ######################
 
-col1, mid, col2 = st.columns([10,1,20])
+col1, mid, col2 = st.columns([5,10,10])
 with col1:
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')
     st.write("""
-        ### Receiver operating characteristic (ROC) curve showing how the bulk model performs at all classification thresholds. 
-        ### At the top is the accuracy of the model.
+        ### Receiver operating characteristic (ROC) curve and its area (top).
         """)
-with col2:
+with mid:
     st.image(image, width=500)
+with col2:
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.write("""
+        An ROC curve (receiver operating characteristic curve) is a graph showing the performance of a classification model at all classification thresholds. 
+        This curve plots two parameters:
+        * True Positive Rate
+        * False Positive Rate
+        """)
 
-col1, mid, col2 = st.columns([5,2,20])
+st.markdown('##')
+st.markdown('##')
+
+col1, mid, col2 = st.columns([5,10,10])
 with col1:
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')
     st.write("""
-    ### Heatmap of the confusion matrix of model predictions for the selected drug and cancer cell line
+    ### Confusion matrix
     """)    
 
+with mid:
+    st.write(plot_confusion_matrix(cm))
 with col2:
-
-    st.write(plot_confusion_matrix(cm), width=5)
+    st.markdown('##')
+    st.markdown('##')
+    st.write("""
+    A confusion matrix is a summary of prediction results on a classification problem.
+    The number of correct and incorrect predictions are summarized with count values and broken down by each class. 
+    """) 
