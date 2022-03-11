@@ -195,14 +195,14 @@ if st.sidebar.button('Run model'):
         latest_file = max(list_of_files, key=os.path.getctime)
         first_file2 = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
 
-        if latest_file != first_file2:
-            print(latest_file)
-            root = latest_file.rsplit("-", 7)[0]
-            root2= root.rsplit("2022", 1)[0]
-            new_name = root2 + "_" + str(drug) + ".h5ad"
-            os.rename(latest_file, new_name)
-        
-            st_autorefresh(interval=5, limit=2)
+    if latest_file != first_file2:
+        print(latest_file)
+        root = latest_file.rsplit("-", 7)[0]
+        root2= root.rsplit("2022", 1)[0]
+        new_name = root2 + "_" + str(drug) + ".h5ad"
+        os.rename(latest_file, new_name)
+    
+        st_autorefresh(interval=5, limit=2)
 
     #list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
     #latest_err = max(list_of_err, key=os.path.getctime)
@@ -324,7 +324,7 @@ st.markdown('##')
 col1, col2, col3, col4 = st.columns([5, 15,20, 10])
 with col2:
     st.write("""
-    ### Confusion matrix
+    ### Confusion matrix of single-cell drug response prediction (Resistant vs Sensitive)
     """)
     st.markdown('##')
     st.write(plot_confusion_matrix(cm))
