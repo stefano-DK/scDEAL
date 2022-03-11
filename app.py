@@ -24,7 +24,7 @@ from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 #from sklearn.metrics import accuracy_score
 st.set_page_config(layout="wide")
 appsbasedir = os.path.dirname(os.path.realpath(__file__))
-first_file = appsbasedir + "/saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad"
+first_file = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
 
 # data download
 if not os.path.exists('./data'):
@@ -45,13 +45,13 @@ if not os.path.exists('./data'):
     subprocess.Popen(['mv data/other/*.* data && rm -r data/other'], shell=True)
 
 if not os.path.exists('./saved/adata/GSE110894_I-BET-762.h5ad'):
-    gdown.download("https://drive.google.com/file/d/1jZj25AEaeE2kCwwbhqkPgm_Qr4miHztN/view?usp=sharing", output='./saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad', quiet=False, use_cookies=False, fuzzy=True)
+    gdown.download("https://drive.google.com/file/d/1jZj25AEaeE2kCwwbhqkPgm_Qr4miHztN/view?usp=sharing", output='./saved/adata/GSE110894_I-BET-762.h5ad', quiet=False, use_cookies=False, fuzzy=True)
     st.warning("Result Download finished")
     
-    root = first_file.rsplit("-", 7)[0]
-    root2= root.rsplit("2022", 1)[0]
-    new_name = root2 + '_I-BET-762.h5ad'
-    os.rename(first_file, new_name)
+    # root = first_file.rsplit("-", 7)[0]
+    # root2= root.rsplit("2022", 1)[0]
+    # new_name = root2 + '_I-BET-762.h5ad'
+    # os.rename(first_file, new_name)
 
 if not os.path.exists('./saved/models'):
     gdown.download_folder('https://drive.google.com/drive/folders/1HOldnGZ6ZL46bRej933AXf6JMcfV5Tjh?usp=sharing', output='./saved/models', quiet=False, use_cookies=False)
@@ -167,7 +167,7 @@ for root, dirs, files in os.walk("saved/adata/"):
 #st.sidebar.write(filelist)
 study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872", "GSE112274", "GSE140440", "GSE149383"])
 #drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefitinib', 'I-BET-762','Ibrutinib','JQ1','Tamoxifen','Trametinib'])
-drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Entinostat', 'Gefitinib'])
+drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Entinostat', 'Gefitinib', 'Docetaxel', 'Erlotinib'])
 
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
@@ -175,6 +175,7 @@ if st.sidebar.button('Run model'):
     with st.spinner('Wait for the computation to finish'):
         subprocess.run([f"{sys.executable}", model_dir,
         '--sc_data', str(study),
+        '--label', 'data/GDSC2_label_192drugs_binary.csv',
         '--pretrain', 'saved/models/sc_encoder_ae.pkl',
         '-s', bulkmodel,
         '--dimreduce', 'AE', 
@@ -185,22 +186,23 @@ if st.sidebar.button('Run model'):
         '--predictor_h_dims', "128,64",
         '-l', 'out.log'
         ])
+
     #st.warning("Computation done")
     #files_in_directory = os.listdir("saved/adata")
     #filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
 
-    list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
-    latest_file = max(list_of_files, key=os.path.getctime)
-    first_file2 = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
+        list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
+        latest_file = max(list_of_files, key=os.path.getctime)
+        first_file2 = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
 
-    if latest_file != first_file2:
-        print(latest_file)
-        root = latest_file.rsplit("-", 7)[0]
-        root2= root.rsplit("2022", 1)[0]
-        new_name = root2 + "_" + str(drug) + ".h5ad"
-        os.rename(latest_file, new_name)
-    
-        st_autorefresh(interval=5, limit=2)
+        if latest_file != first_file2:
+            print(latest_file)
+            root = latest_file.rsplit("-", 7)[0]
+            root2= root.rsplit("2022", 1)[0]
+            new_name = root2 + "_" + str(drug) + ".h5ad"
+            os.rename(latest_file, new_name)
+        
+            st_autorefresh(interval=5, limit=2)
 
     #list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
     #latest_err = max(list_of_err, key=os.path.getctime)
@@ -271,15 +273,8 @@ df.loc[df.index.isin(idx4), 'pred_group'] = 'Sensitive'
 
 cm = confusion_matrix(df['sensitivity'], df['pred_group'])
 
-fig, ax = plt.subplots(figsize=(2,1.5))
-plt.figure(figsize=(10,10))
-
-sns.set(font_scale=0.3)
-sns.heatmap(cm, ax=ax, annot=True, center=0, cmap="YlGnBu")
-
-
 if str(resultfile2) is None:
-    resultfile2  = "AEEntinostat2022-02-22-15-00-38_roc"
+    resultfile2  = "Entinostat"
     image_dir = appsbasedir + "/saved/figures/" + resultfile2 + '.jpg'
 else:
     image_dir = appsbasedir + "/saved/figures/" + str(resultfile2) + '.jpg'
@@ -302,9 +297,10 @@ with col2:
     # st.markdown('##')
     # st.markdown('##')
     st.write("""
-        ### ROC curve with AUC value (top).
+        ### ROC curve with AUC value (top) of:
         """)
-    
+    st.subheader(str(resultfile2).rsplit(".",1)[0])
+
     st.markdown('##')
     st.image(image, width=600)
 with col3:
