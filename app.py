@@ -85,7 +85,7 @@ def plot_confusion_matrix(cm):
 
     # add custom yaxis title
     fig.add_annotation(dict(font=dict(color="black",size=16),
-                        x=-0.25,
+                        x=-0.20,
                         y=0.5,
                         showarrow=False,
                         text="True value",
