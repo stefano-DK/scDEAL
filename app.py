@@ -125,7 +125,7 @@ def LastNlines(fname, N):
 col1, mid, col2 = st.columns([40,5,20])
 
 col1.write("""
-# Cell Drug Sensitivity App
+# Cell Drug Sensitivity based on RNAseq data.
 ## Transfer Learning from tissue to single cells.
 
 This app uses Deep Learning models trained on gene expression data from bulk cell lines treated with different 
@@ -315,11 +315,12 @@ with col3:
     st.markdown('##')
     st.write("""
         An ROC curve (receiver operating characteristic curve) is a graph showing the performance of a classification model at all classification thresholds. 
-        This curve plots two parameters:
-        * True Positive Rate
-        * False Positive Rate
+        This curve plots two variables:
+        * True Positive Rate (TPR)
+        * False Positive Rate (FPR)
 
-        The bigger is the Area Under the Curve (AUC), the better the model predicts.
+        The bigger the Area Under the Curve (AUC) is, the better the model predicts. Usually one picks the threshold value on the curve providing the highest TPR with the lowest FPR.
+        The blue dashed line represents the baseline, or the TPR/FPR values given by random classifier.
         """)
 
 st.markdown('##')
