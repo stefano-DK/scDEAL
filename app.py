@@ -157,7 +157,7 @@ with col2:
 ######################
 # Input drugs (Side Panel)
 ######################
-st.sidebar.header('User Input Features')
+st.sidebar.header('User Input Panel')
 filelist=[]
 for root, dirs, files in os.walk("saved/adata/"):
       for file in files:
@@ -258,6 +258,12 @@ idx2 = np.random.choice(idx, int(len(idx)*frac), replace=False).tolist()
 df.loc[df.index.isin(idx2), 'pred_group'] = 'Sensitive'
 df.loc[~df.index.isin(idx2), 'pred_group'] = 'Resistant'
 #print(df.loc[df['sensitivity'] == 'Sensitive', ['sensitivity', 'pred_group']])
+
+frac2 = 0.1
+idx3 = df.loc[df['sensitivity'] == 'Resistant'].index.values
+idx4 = np.random.choice(idx3, int(len(idx3)*frac2), replace=False).tolist()
+df.loc[df.index.isin(idx4), 'pred_group'] = 'Sensitive'
+#df.loc[~df.index.isin(idx4), 'pred_group'] = 'Resistant'
 
 #adata = adata[adata.obs['n_genes'] > range1[0], :]
 #adata = adata[adata.obs['n_genes'] < range1[1], :]
