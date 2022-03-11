@@ -267,7 +267,7 @@ df.loc[df.index.isin(idx4), 'pred_group'] = 'Sensitive'
 
 #adata = adata[adata.obs['n_genes'] > range1[0], :]
 #adata = adata[adata.obs['n_genes'] < range1[1], :]
-st.write("Number of expressed genes", df.shape[0])
+#st.write("Number of expressed genes", df.shape[0])
 
 cm = confusion_matrix(df['sensitivity'], df['pred_group'])
 
@@ -320,7 +320,7 @@ with col3:
         * False Positive Rate (FPR)
 
         The bigger the Area Under the Curve (AUC) is, the better the model predicts. Usually one picks the threshold value on the curve providing the highest TPR with the lowest FPR.
-        
+
         The blue dashed line represents the baseline, or the TPR/FPR values given by random classifier.
         """)
 
