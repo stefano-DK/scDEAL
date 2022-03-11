@@ -6,6 +6,9 @@ from pathlib import Path
 import streamlit as st
 import numpy as np
 #import pandas as pd
+import streamlit as st
+import streamlit_authenticator as stauth
+
 from streamlit_autorefresh import st_autorefresh
 import subprocess
 import seaborn as sns
@@ -21,9 +24,6 @@ from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 #from sklearn.metrics import accuracy_score
 st.set_page_config(layout="wide")
 appsbasedir = os.path.dirname(os.path.realpath(__file__))
-
-stdout = io.StringIO()
-st.set_option('deprecation.showPyplotGlobalUse', False)
 first_file = appsbasedir + "/saved/adata/GSE1108942022-02-24-10-55-33_I-BET-762.h5ad"
 
 # data download
@@ -31,9 +31,16 @@ if not os.path.exists('./data'):
     url1 = 'https://drive.google.com/drive/folders/1AH--DDw7_rDDySYlLEo_VgslIbZhFD_Q?usp=sharing'
     url2 = 'https://drive.google.com/drive/folders/1kTH2hQVNwlXQeV5hCMLVc4eqhrvvag7Q?usp=sharing'
     url3 = 'https://drive.google.com/drive/folders/1eDHumsD3Cbjd9mVkmnxjbEjNq3qXyg4l?usp=sharing'
+    url4 = 'https://drive.google.com/drive/folders/1o7MjpiQ08Kc0DgTt5Obhazl2YnsAQ-k8?usp=sharing'
+    url5 = 'https://drive.google.com/drive/folders/1XHqaKJt-xQXRADgwCRLHhoGtApHmFfTK?usp=sharing'
+    url6 = 'https://drive.google.com/drive/folders/1G-LnaDTpJm-jy0IDtcbUb7hU4_7uxDHY?usp=sharing'
+
     gdown.download_folder(url1, output='./data/other', quiet=False, use_cookies=False)
     gdown.download_folder(url2, output='./data/GSE117872', quiet=False, use_cookies=False)
     gdown.download_folder(url3, output='./data/GSE110894', quiet=False, use_cookies=False)
+    gdown.download_folder(url4, output='./data/GSE112274', quiet=False, use_cookies=False)
+    gdown.download_folder(url5, output='./data/GSE149383', quiet=False, use_cookies=False)
+    gdown.download_folder(url6, output='./data/GSE140440', quiet=False, use_cookies=False)
 
     subprocess.Popen(['mv data/other/*.* data && rm -r data/other'], shell=True)
 
@@ -77,7 +84,7 @@ def plot_confusion_matrix(cm):
                         yref="paper"))
 
     # add custom yaxis title
-    fig.add_annotation(dict(font=dict(color="white",size=16),
+    fig.add_annotation(dict(font=dict(color="black",size=16),
                         x=-0.15,
                         y=0.5,
                         showarrow=False,
@@ -133,6 +140,9 @@ Predicts the drug sensitivity of single cells! Steps:
 Info on available cancer cell lines:
 * **GSE117872**: Cisplatin treated oral squamous cell carcinoma
 * **GSE110894**: I-BET-762 treated acute myeloid leukemia
+* **GSE140440**: Docetaxel treated prostate cancer
+* **GSE149383**: Erlotinib treated lung cancer
+* **GSE112274**: Gefitinib treated lung cancer
 ***
 """)
 
@@ -147,7 +157,6 @@ with col2:
 ######################
 # Input drugs (Side Panel)
 ######################
-
 st.sidebar.header('User Input Features')
 filelist=[]
 for root, dirs, files in os.walk("saved/adata/"):
@@ -156,9 +165,9 @@ for root, dirs, files in os.walk("saved/adata/"):
              filename=os.path.join(root, file)
              filelist.append(Path(filename).stem)
 #st.sidebar.write(filelist)
-study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872"])
+study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872", "GSE112274", "GSE140440", "GSE149383"])
 #drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefitinib', 'I-BET-762','Ibrutinib','JQ1','Tamoxifen','Trametinib'])
-drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen'])
+drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Entinostat', 'Gefitinib'])
 
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
@@ -182,8 +191,10 @@ if st.sidebar.button('Run model'):
 
     list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
     latest_file = max(list_of_files, key=os.path.getctime)
-    
-    if latest_file != first_file:
+    first_file2 = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
+
+    if latest_file != first_file2:
+        print(latest_file)
         root = latest_file.rsplit("-", 7)[0]
         root2= root.rsplit("2022", 1)[0]
         new_name = root2 + "_" + str(drug) + ".h5ad"
@@ -203,7 +214,7 @@ if st.sidebar.button('Run model'):
 filelist2=[]
 for root, dirs, files in os.walk("saved/figures"):
       for file in files:
-             if file.endswith("_roc.pdf"):
+             if file.endswith(".pdf"):
                     filename=os.path.join(root, file)
                     filelist2.append(Path(filename).stem)
 
@@ -279,8 +290,8 @@ image = Image.open(image_dir)
 # First row of images and text
 ######################
 
-col1, col2 = st.columns([12,20])
-with col1:
+col1, col2, col3, col4 = st.columns([5, 17,20,10])
+with col2:
     # st.markdown('##')
     # st.markdown('##')
     # st.markdown('##')
@@ -289,8 +300,10 @@ with col1:
         """)
     
     st.markdown('##')
-    st.image(image, width=500)
-with col2:
+    st.image(image, width=600)
+with col3:
+    st.markdown('##')
+    st.markdown('##')
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')
@@ -304,14 +317,14 @@ with col2:
         """)
 
 st.markdown('##')
-col1, col2 = st.columns([11,18])
-with col1:
+col1, col2, col3, col4 = st.columns([5, 15,20, 10])
+with col2:
     st.write("""
     ### Confusion matrix
     """)
     st.markdown('##')
     st.write(plot_confusion_matrix(cm))
-with col2:
+with col3:
     st.markdown('##')
     st.markdown('##')
     st.markdown('##')
