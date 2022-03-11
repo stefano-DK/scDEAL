@@ -7,7 +7,7 @@ import streamlit as st
 import numpy as np
 #import pandas as pd
 import streamlit as st
-import streamlit_authenticator as stauth
+#import streamlit_authenticator as stauth
 
 from streamlit_autorefresh import st_autorefresh
 import subprocess
