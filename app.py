@@ -320,6 +320,7 @@ with col3:
         * False Positive Rate (FPR)
 
         The bigger the Area Under the Curve (AUC) is, the better the model predicts. Usually one picks the threshold value on the curve providing the highest TPR with the lowest FPR.
+        
         The blue dashed line represents the baseline, or the TPR/FPR values given by random classifier.
         """)
 
