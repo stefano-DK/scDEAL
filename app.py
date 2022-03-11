@@ -122,7 +122,7 @@ def LastNlines(fname, N):
 # Page Title
 ######################
 
-col1, mid, col2 = st.columns([40,5,20])
+col1, mid, col2 = st.columns([40,3,20])
 
 col1.write("""
 # Cell Drug Sensitivity based on RNAseq data.
