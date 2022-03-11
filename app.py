@@ -94,7 +94,7 @@ def plot_confusion_matrix(cm):
                         yref="paper"))
 
     # adjust margins to make room for yaxis title
-    fig.update_layout(margin=dict(t=5, l=10), width=500)
+    fig.update_layout(margin=dict(t=5, l=5), width=500)
 
     # add colorbar
     fig['data'][0]['showscale'] = True
