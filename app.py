@@ -85,7 +85,7 @@ def plot_confusion_matrix(cm):
 
     # add custom yaxis title
     fig.add_annotation(dict(font=dict(color="black",size=16),
-                        x=-0.20,
+                        x=-0.25,
                         y=0.5,
                         showarrow=False,
                         text="True value",
@@ -94,7 +94,7 @@ def plot_confusion_matrix(cm):
                         yref="paper"))
 
     # adjust margins to make room for yaxis title
-    fig.update_layout(margin=dict(t=5, l=50), width=500)
+    fig.update_layout(margin=dict(t=5, l=10), width=480)
 
     # add colorbar
     fig['data'][0]['showscale'] = True
