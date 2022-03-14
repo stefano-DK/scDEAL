@@ -15,12 +15,13 @@ import seaborn as sns
 import io
 from pdf2image import convert_from_path
 import scanpy as sc
+import plotly.express as px
 
 from PIL import Image
 import matplotlib.pyplot as plt
 import plotly.figure_factory as ff
 from sklearn.metrics import confusion_matrix, plot_confusion_matrix
-#import plotly.express as px
+
 #from sklearn.metrics import accuracy_score
 st.set_page_config(layout="wide")
 appsbasedir = os.path.dirname(os.path.realpath(__file__))
@@ -118,6 +119,44 @@ def LastNlines(fname, N):
     a_file.close()
     return last_lines
 
+def plot_cells(adata,set):
+
+    if set == 'True':
+        key='sensitivity'
+        title='Single Cells True Labels'
+    elif set == 'Pred':
+        key='pred_group'
+        title='Single Cells Predicted Labels'
+
+    plotdf = sc.get.obs_df(
+        adata,
+        keys=[key],
+        obsm_keys=[("X_umap", 0), ("X_umap", 1)]
+    )
+
+    fig = px.scatter(
+        plotdf, x='X_umap-0', y='X_umap-1',
+        color=key,
+        labels={'color': 'sensitivity'},
+        title=title
+    )
+    fig.update_layout({
+    'plot_bgcolor': 'white',
+    'paper_bgcolor': 'rgba(0, 0, 0, 0)',
+    'font_color':'black',
+    'xaxis_title':'',
+    'yaxis_title':'',
+    'showlegend':True,
+    'margin':dict(l=5, r=1, t=30, b=5),
+    'width':700,
+    })
+    fig.update_xaxes(showline=True, linewidth=2, linecolor='LightGrey', mirror=True)
+    fig.update_yaxes(showline=True, linewidth=2, linecolor='LightGrey', mirror=True)
+    fig.update_xaxes(zeroline=False, showgrid=True, gridwidth=1, gridcolor='LightGrey')
+    fig.update_yaxes(zeroline=False, showgrid=True, gridwidth=1, gridcolor='LightGrey')
+    #fig.show(renderer='notebook_connected')
+    return fig
+
 ######################
 # Page Title
 ######################
@@ -191,9 +230,9 @@ if st.sidebar.button('Run model'):
     #files_in_directory = os.listdir("saved/adata")
     #filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
 
-        list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
-        latest_file = max(list_of_files, key=os.path.getctime)
-        first_file2 = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
+    list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
+    latest_file = max(list_of_files, key=os.path.getctime)
+    first_file2 = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
 
     if latest_file != first_file2:
         print(latest_file)
@@ -251,7 +290,7 @@ else:
     result_dir=appsbasedir + "/saved/adata/" + str(resultfile) + '.h5ad'
 
 adata = sc.read(result_dir)
-adata.obs['pred_groups'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]
+adata.obs['pred_group'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]
 
 df=adata.obs
 frac = 0.8
@@ -288,9 +327,27 @@ else:
 image = Image.open(image_dir)
 
 ######################
-# First row of images and text
+# Rows of images and text in main page
 ######################
+st.markdown('##')
+col1, col2, col3, _ = st.columns([15,15,15,2])
 
+with col1:
+    st.write(plot_cells(adata,'True'))
+with col2:
+    st.write(plot_cells(adata, 'Pred'))
+with col3:
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    
+    st.write("""
+        Here we have scatter plots of single cells clustered based on their RNAseq values. Each cell color corresponds to the true (left) or predicted (right) drug sensitivity label.
+    """) 
+
+st.markdown('##')
 col1, col2, col3, col4 = st.columns([5, 17,20,10])
 with col2:
     # st.markdown('##')
@@ -338,3 +395,4 @@ with col3:
     * A confusion matrix is a summary of prediction results on a classification problem. The number of correct and incorrect predictions are summarized with count values and broken down by each class. \n
     * A perfect model would classify all Resistant labels as Resistant and all Sensitive labels as Sensitive.
     """) 
+
