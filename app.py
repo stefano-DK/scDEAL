@@ -336,9 +336,9 @@ st.markdown('##')
 col1, col2, col3, _ = st.columns([15,15,15,2])
 
 with col1:
-    st.write(plot_cells(adata,'True'))
+    st.plotly_chart(plot_cells(adata,'True'), use_container_width=True)
 with col2:
-    st.write(plot_cells(adata, 'Pred'))
+    st.plotly_chart(plot_cells(adata, 'Pred'), use_container_width=True)
 with col3:
     st.markdown('##')
     st.markdown('##')
