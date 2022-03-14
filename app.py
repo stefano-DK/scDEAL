@@ -33,15 +33,15 @@ if not os.path.exists('./data'):
     url2 = 'https://drive.google.com/drive/folders/1kTH2hQVNwlXQeV5hCMLVc4eqhrvvag7Q?usp=sharing'
     url3 = 'https://drive.google.com/drive/folders/1eDHumsD3Cbjd9mVkmnxjbEjNq3qXyg4l?usp=sharing'
     url4 = 'https://drive.google.com/drive/folders/1o7MjpiQ08Kc0DgTt5Obhazl2YnsAQ-k8?usp=sharing'
-    #url5 = 'https://drive.google.com/drive/folders/1XHqaKJt-xQXRADgwCRLHhoGtApHmFfTK?usp=sharing'
+    url5 = 'https://drive.google.com/drive/folders/1XHqaKJt-xQXRADgwCRLHhoGtApHmFfTK?usp=sharing'
     url6 = 'https://drive.google.com/drive/folders/1G-LnaDTpJm-jy0IDtcbUb7hU4_7uxDHY?usp=sharing'
 
     gdown.download_folder(url1, output='./data/other', quiet=False, use_cookies=False)
-    #gdown.download_folder(url2, output='./data/GSE117872', quiet=False, use_cookies=False)
+    gdown.download_folder(url2, output='./data/GSE117872', quiet=False, use_cookies=False)
     gdown.download_folder(url3, output='./data/GSE110894', quiet=False, use_cookies=False)
-    #gdown.download_folder(url4, output='./data/GSE112274', quiet=False, use_cookies=False)
-    #gdown.download_folder(url5, output='./data/GSE149383', quiet=False, use_cookies=False)
-    #gdown.download_folder(url6, output='./data/GSE140440', quiet=False, use_cookies=False)
+    gdown.download_folder(url4, output='./data/GSE112274', quiet=False, use_cookies=False)
+    gdown.download_folder(url5, output='./data/GSE149383', quiet=False, use_cookies=False)
+    gdown.download_folder(url6, output='./data/GSE140440', quiet=False, use_cookies=False)
 
     subprocess.Popen(['mv data/other/*.* data && rm -r data/other'], shell=True)
 
@@ -377,7 +377,7 @@ with col1:
         """)
     
     st.markdown('##')
-    st.image(image, width=600)
+    st.image(image, width=500)
 
 with col3:
     st.write("""
@@ -395,7 +395,7 @@ with col3:
     st.markdown('##')
     st.markdown('##')
 
-    st.write(plot_confusion_matrix(cm))
+    st.plotly_chart(plot_confusion_matrix(cm), use_container_width=True)
 
 
 
