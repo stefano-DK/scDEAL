@@ -148,7 +148,7 @@ def plot_cells(adata,set):
     'yaxis_title':'',
     'showlegend':True,
     'margin':dict(l=5, r=1, t=30, b=5),
-    'width':700,
+    'width':600,
     })
     fig.update_xaxes(showline=True, linewidth=2, linecolor='LightGrey', mirror=True)
     fig.update_yaxes(showline=True, linewidth=2, linecolor='LightGrey', mirror=True)
