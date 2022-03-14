@@ -252,14 +252,14 @@ if st.sidebar.button('Run model'):
 #st.write('Range:', range1)
 #st.write('Drug', drug)
  
-filelist2=[]
-for root, dirs, files in os.walk("saved/figures"):
-      for file in files:
-             if file.endswith(".pdf"):
-                    filename=os.path.join(root, file)
-                    filelist2.append(Path(filename).stem)
+# filelist2=[]
+# for root, dirs, files in os.walk("saved/figures"):
+#       for file in files:
+#              if file.endswith(".pdf"):
+#                     filename=os.path.join(root, file)
+#                     filelist2.append(Path(filename).stem)
 
-resultfile2 = st.sidebar.selectbox('Model performances', filelist2)
+# resultfile2 = st.sidebar.selectbox('Model performances', filelist2)
 
 # if st.sidebar.button('REFRESH'):
 #     st_autorefresh(interval=1, limit=1)
@@ -312,23 +312,27 @@ df.loc[df.index.isin(idx4), 'pred_group'] = 'Sensitive'
 
 cm = confusion_matrix(df['sensitivity'], df['pred_group'])
 
-if str(resultfile2) is None:
-    resultfile2  = "Entinostat"
-    image_dir = appsbasedir + "/saved/figures/" + resultfile2 + '.jpg'
-else:
-    image_dir = appsbasedir + "/saved/figures/" + str(resultfile2) + '.jpg'
-    pdf = appsbasedir + "/saved/figures/" + str(resultfile2) + '.pdf'
+# if str(resultfile2) is None:
+#     resultfile2  = "Entinostat"
+#     image_dir = appsbasedir + "/saved/figures/" + resultfile2 + '.jpg'
+# else:
+#     image_dir = appsbasedir + "/saved/figures/" + str(resultfile2) + '.jpg'
+#     pdf = appsbasedir + "/saved/figures/" + str(resultfile2) + '.pdf'
     
-    pages = convert_from_path(pdf, 500)
+#     pages = convert_from_path(pdf, 500)
     
-    for page in pages:
-        page.save(image_dir, 'JPEG')
+#     for page in pages:
+#         page.save(image_dir, 'JPEG')
 
+#image_dir = appsbasedir + "/saved/figures/" + str(new_name).rsplit(".",1)[0].rsplit("_",1)[1] +'.jpg'
+image_dir = appsbasedir + "/saved/figures/" + str(drug) + '.jpg'
 image = Image.open(image_dir)
 
 ######################
 # Rows of images and text in main page
 ######################
+st.markdown('##')
+st.subheader(str(resultfile))
 st.markdown('##')
 col1, col2, col3, _ = st.columns([15,15,15,2])
 
@@ -348,23 +352,19 @@ with col3:
     """) 
 
 st.markdown('##')
-col1, col2, col3, col4 = st.columns([5, 17,20,10])
-with col2:
+st.write("""
+***
+""")
+col1, col2, col3, col4 = st.columns([20, 5,20,10])
+with col1:
     # st.markdown('##')
     # st.markdown('##')
     # st.markdown('##')
     st.write("""
         ### ROC curve with AUC value (top) of:
         """)
-    st.subheader(str(resultfile2).rsplit(".",1)[0])
+    st.subheader(str(drug))
 
-    st.markdown('##')
-    st.image(image, width=600)
-with col3:
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
     st.markdown('##')
     st.write("""
         An ROC curve (receiver operating characteristic curve) is a graph showing the performance of a classification model at all classification thresholds. 
@@ -376,23 +376,27 @@ with col3:
 
         The blue dashed line represents the baseline, or the TPR/FPR values given by random classifier.
         """)
+    
+    st.markdown('##')
+    st.image(image, width=600)
 
-st.markdown('##')
-col1, col2, col3, col4 = st.columns([5, 15,20, 10])
-with col2:
+with col3:
     st.write("""
     ### Confusion matrix of single-cell drug response prediction (Resistant vs Sensitive)
     """)
     st.markdown('##')
-    st.write(plot_confusion_matrix(cm))
-with col3:
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
-    st.markdown('##')
     st.write("""
     * A confusion matrix is a summary of prediction results on a classification problem. The number of correct and incorrect predictions are summarized with count values and broken down by each class. \n
     * A perfect model would classify all Resistant labels as Resistant and all Sensitive labels as Sensitive.
-    """) 
+    """)
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+    st.markdown('##')
+
+    st.write(plot_confusion_matrix(cm))
+
+
 
