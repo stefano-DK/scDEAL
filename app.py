@@ -243,9 +243,9 @@ if st.sidebar.button('Run model'):
     
         st_autorefresh(interval=5, limit=2)
 
-    #list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
-    #latest_err = max(list_of_err, key=os.path.getctime)
-    #st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
+    list_of_err = glob.glob("./*.err") # * means all if need specific format then *.csv
+    latest_err = max(list_of_err, key=os.path.getctime)
+    st.sidebar.text_area("Computation error", LastNlines(latest_err, 10))
     
 ...
 #range1 = st.sidebar.slider('N genes', 0, 5000,(0,5000))
