@@ -324,8 +324,8 @@ cm = confusion_matrix(df['sensitivity'], df['pred_group'])
 #     for page in pages:
 #         page.save(image_dir, 'JPEG')
 
-#image_dir = appsbasedir + "/saved/figures/" + str(new_name).rsplit(".",1)[0].rsplit("_",1)[1] +'.jpg'
-image_dir = appsbasedir + "/saved/figures/" + str(drug) + '.jpg'
+image_dir = appsbasedir + "/saved/figures/" + str(resultfile).rsplit("_",1)[1] +'.jpg'
+#image_dir = appsbasedir + "/saved/figures/" + str(drug) + '.jpg'
 image = Image.open(image_dir)
 
 ######################
@@ -363,7 +363,7 @@ with col1:
     st.write("""
         ### ROC curve with AUC value (top) of:
         """)
-    st.subheader(str(drug))
+    st.subheader(str(resultfile).rsplit("_",1)[1])
 
     st.markdown('##')
     st.write("""
