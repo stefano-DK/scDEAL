@@ -33,14 +33,14 @@ if not os.path.exists('./data'):
     url2 = 'https://drive.google.com/drive/folders/1kTH2hQVNwlXQeV5hCMLVc4eqhrvvag7Q?usp=sharing'
     url3 = 'https://drive.google.com/drive/folders/1eDHumsD3Cbjd9mVkmnxjbEjNq3qXyg4l?usp=sharing'
     url4 = 'https://drive.google.com/drive/folders/1o7MjpiQ08Kc0DgTt5Obhazl2YnsAQ-k8?usp=sharing'
-    url5 = 'https://drive.google.com/drive/folders/1XHqaKJt-xQXRADgwCRLHhoGtApHmFfTK?usp=sharing'
+    #url5 = 'https://drive.google.com/drive/folders/1XHqaKJt-xQXRADgwCRLHhoGtApHmFfTK?usp=sharing'
     url6 = 'https://drive.google.com/drive/folders/1G-LnaDTpJm-jy0IDtcbUb7hU4_7uxDHY?usp=sharing'
 
     gdown.download_folder(url1, output='./data/other', quiet=False, use_cookies=False)
     gdown.download_folder(url2, output='./data/GSE117872', quiet=False, use_cookies=False)
     gdown.download_folder(url3, output='./data/GSE110894', quiet=False, use_cookies=False)
     gdown.download_folder(url4, output='./data/GSE112274', quiet=False, use_cookies=False)
-    gdown.download_folder(url5, output='./data/GSE149383', quiet=False, use_cookies=False)
+    #gdown.download_folder(url5, output='./data/GSE149383', quiet=False, use_cookies=False)
     gdown.download_folder(url6, output='./data/GSE140440', quiet=False, use_cookies=False)
 
     subprocess.Popen(['mv data/other/*.* data && rm -r data/other'], shell=True)
@@ -180,7 +180,6 @@ Info on available cancer cell lines:
 * **GSE117872**: Cisplatin treated oral squamous cell carcinoma
 * **GSE110894**: I-BET-762 treated acute myeloid leukemia
 * **GSE140440**: Docetaxel treated prostate cancer
-* **GSE149383**: Erlotinib treated lung cancer
 * **GSE112274**: Gefitinib treated lung cancer
 ***
 """)
@@ -204,9 +203,9 @@ for root, dirs, files in os.walk("saved/adata/"):
              filename=os.path.join(root, file)
              filelist.append(Path(filename).stem)
 #st.sidebar.write(filelist)
-study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872", "GSE112274", "GSE140440", "GSE149383"])
+study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872", "GSE112274", "GSE140440"])
 #drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefitinib', 'I-BET-762','Ibrutinib','JQ1','Tamoxifen','Trametinib'])
-drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Entinostat', 'Gefitinib', 'Docetaxel', 'Erlotinib'])
+drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Entinostat', 'Gefitinib', 'Docetaxel'])
 
 bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
 model_dir = "./scmodel.py"
