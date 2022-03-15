@@ -13,7 +13,7 @@ scanpy==1.8.2
 scikit_learn==1.0.2
 scipy==1.5.2
 seaborn==0.11.2
-streamlit==1.5.1
+#streamlit==1.5.1
 streamlit_autorefresh==0.0.1
 torch==1.10.2
 tqdm==4.62.3
