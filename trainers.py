@@ -48,20 +48,20 @@ def train_AE_model(net,data_loaders={},optimizer=None,loss_function=None,n_epoch
             # for data in data_loaders[phase]:
             for batchidx, (x, _) in enumerate(data_loaders[phase]):
 
-                x.requires_grad_(True)
+                x.requires_grad_(True)    #autograd begins to record operations on this tensor
                 # encode and decode 
-                output = net(x)
+                output = net(x)           #This line runs the model
                 # compute loss
                 loss = loss_function(output, x)      
 
                 # zero the parameter (weight) gradients
-                optimizer.zero_grad()
+                optimizer.zero_grad()         #resets the gradients
 
-                # backward + optimize only if in training phase
+                # backward + optimize only if in training phase: optimization step
                 if phase == 'train':
-                    loss.backward()
+                    loss.backward()   #calculates the first derivatives of weights
                     # update the weights
-                    optimizer.step()
+                    optimizer.step()    #finds the minimum of the cost function using the specific given learning rate
 
                 # print loss statistics
                 running_loss += loss.item()
@@ -71,7 +71,7 @@ def train_AE_model(net,data_loaders={},optimizer=None,loss_function=None,n_epoch
 
             
             if phase == 'train':
-                scheduler.step(epoch_loss)
+                scheduler.step(epoch_loss)  #here we are updating the learning rate before starting the new training phase
                 
             last_lr = scheduler.optimizer.param_groups[0]['lr']
             loss_train[epoch,phase] = epoch_loss

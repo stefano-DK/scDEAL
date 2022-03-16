@@ -7,7 +7,7 @@ from torch import Tensor
 from copy import deepcopy
 
 # Model of AE
-class AEBase(nn.Module):
+class AEBase(nn.Module): #This is the basic class of the AutoEncoder
     def __init__(self,
                  input_dim,
                  latent_dim=128,
@@ -25,20 +25,21 @@ class AEBase(nn.Module):
 
         # Build Encoder
         for i in range(1,len(hidden_dims)):
-            i_dim = hidden_dims[i-1]
-            o_dim = hidden_dims[i]
+            i_dim = hidden_dims[i-1]  #here i_dim is basically the size of the input (nr. of samples)
+            o_dim = hidden_dims[i]     #here o_dim is the nr. of features (nr. of genes)
 
             modules.append(
                 nn.Sequential(
                     nn.Linear(i_dim, o_dim),
-                    nn.BatchNorm1d(o_dim),
+                    nn.BatchNorm1d(o_dim),   #this are the sequence of modules of the encoder.
                     #nn.ReLU(),
                     nn.Dropout(drop_out))
             )
             #in_channels = h_dim
 
         self.encoder = nn.Sequential(*modules)
-        self.bottleneck = nn.Linear(hidden_dims[-1], latent_dim)
+        self.bottleneck = nn.Linear(hidden_dims[-1], latent_dim)  #The bottleneck is the the smallest layer, or the latent space where the input is mapped onto.
+                                                                #here it has 128 as total number of features (genes)
 
         # Build Decoder
         modules = []
@@ -47,7 +48,7 @@ class AEBase(nn.Module):
 
         hidden_dims.reverse()
 
-        for i in range(len(hidden_dims) - 2):
+        for i in range(len(hidden_dims) - 2):       #Basically this set of layers are the opposite as for the Encoder
             modules.append(
                 nn.Sequential(
                     nn.Linear(hidden_dims[i],
@@ -110,7 +111,7 @@ class Predictor(nn.Module):
         
         hidden_dims.insert(0,input_dim)
 
-        # Build Encoder
+        # Build Encoder. This encoder seems identical to that of the AEBase but it has a ReLU activation layer.
         for i in range(1,len(hidden_dims)):
             i_dim = hidden_dims[i-1]
             o_dim = hidden_dims[i]
@@ -119,7 +120,7 @@ class Predictor(nn.Module):
                 nn.Sequential(
                     nn.Linear(i_dim, o_dim),
                     nn.BatchNorm1d(o_dim),
-                    nn.ReLU(),
+                    nn.ReLU(),  #this layer might be necessary for the prediction function.
                     nn.Dropout(drop_out))
             )
             #in_channels = h_dim
@@ -131,8 +132,9 @@ class Predictor(nn.Module):
                             nn.Linear(hidden_dims[-1],
                                        output_dim),
                                        nn.Sigmoid()
-                            )            
+                            )
 
+    #The forward function calculates the parameters and weights along the layers.
     def forward(self, input: Tensor, **kwargs):
         embedding = self.predictor(input)
         output = self.output(embedding)
@@ -171,21 +173,24 @@ class PretrainedPredictor(AEBase):
                 # Stop until the bottleneck layer
                 if p.shape.numel() == self.latent_dim:
                     bottlenect_reached = True
-        # Only extract encoder
+
+        # Only extract encoder. Here from the AEBase model (the AutoEncoder) we only use the Encoder layers.
         del self.decoder
         del self.decoder_input
         del self.final_layer
 
-        self.predictor = Predictor(input_dim=self.latent_dim,
+        self.predictor = Predictor(input_dim=self.latent_dim,  #here we are calling the actual predictor model above.
                  output_dim=output_dim,
                  h_dims=hidden_dims_predictor,
                  drop_out=drop_out_predictor)
 
+    #The forward function utilizes the AEBase encoder, but use the Predictor model for the forward function.
     def forward(self, input, **kwargs):
         embedding = self.encode(input)
         output = self.predictor(embedding)
         return  output
    
+   # The predict function also utilizes the Predictor model.
     def predict(self, embedding, **kwargs):
         output = self.predictor(embedding)
         return  output 
