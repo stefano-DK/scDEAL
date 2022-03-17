@@ -5,6 +5,7 @@ through an object oriented framework.
 
 # Import necessary libraries 
 import streamlit as st
+from pages import intro
 
 # Define the multipage class to manage the multiple apps in our program 
 class MultiPage: 
@@ -31,7 +32,14 @@ class MultiPage:
         )
 
     def run(self):
-        # Drodown to select the page to run  
+        # Drodown to select the page to run
+        if "INTRO" not in st.session_state:
+        # Initialize session state.
+            st.session_state.update({
+            # Default page.
+            "INTRO": intro.app
+            })
+
         page = st.sidebar.selectbox(
             'App Navigation', 
             self.pages, 

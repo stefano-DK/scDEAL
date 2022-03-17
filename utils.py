@@ -4,12 +4,12 @@ import re
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-#import scanpy as sc
+import scanpy as sc
 from captum.attr import IntegratedGradients
 from pandas import read_excel
 from scipy.stats import mannwhitneyu
 from sklearn.metrics import precision_recall_curve, roc_curve
-#import scanpypip.utils as ut
+import scanpypip.utils as ut
 
 def highly_variable_genes(data, 
     layer=None, n_top_genes=None, 

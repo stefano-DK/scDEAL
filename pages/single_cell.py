@@ -20,7 +20,7 @@ from sklearn.metrics import confusion_matrix, plot_confusion_matrix
 
 #from sklearn.metrics import accuracy_score
 st.set_page_config(layout="wide")
-appsbasedir = os.path.dirname(os.path.realpath(__file__))
+appsbasedir = os.path.dirname(os.path.realpath('../'))
 first_file = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
 
 def plot_cells(adata,set):
@@ -130,7 +130,7 @@ def app():
     #st.sidebar.write(filelist)
     study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872", "GSE112274", "GSE140440"])
     #drug = st.sidebar.selectbox('Drug',['Cisplatin','Dabrafenib','Entinostat','Gefitinib', 'I-BET-762','Ibrutinib','JQ1','Tamoxifen','Trametinib'])
-    drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Entinostat', 'Gefitinib', 'Docetaxel'])
+    drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Gefitinib', 'Docetaxel'])
 
     bulkmodel = "saved/models/bulk_predictor_AE" + str(drug) + '.pkl'
     model_dir = "./scmodel.py"
@@ -154,9 +154,11 @@ def app():
         #files_in_directory = os.listdir("saved/adata")
         #filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
 
-        list_of_files = glob.glob(appsbasedir + "/saved/adata/*.h5ad") # * means all if need specific format then *.csv
+        list_of_files = glob.glob("saved/adata/*.h5ad") # * means all if need specific format then *.csv
         latest_file = max(list_of_files, key=os.path.getctime)
-        first_file2 = appsbasedir + "/saved/adata/GSE110894_I-BET-762.h5ad"
+        first_file2 = glob.glob("saved/adata/GSE110894_I-BET-762.h5ad")
+        print(latest_file)
+        print(first_file2)
 
         if latest_file != first_file2:
             #fprint(latest_file)
@@ -176,7 +178,7 @@ def app():
     resultfile = st.sidebar.selectbox('Predictions', filelist)
 
     if st.sidebar.button('DELETE PREDICTIONS'):
-        directory = "saved/adata"
+        directory = glob.glob("saved/adata")
 
         files_in_directory = os.listdir(directory)
         filtered_files = [file for file in files_in_directory if file.endswith(".h5ad")]
@@ -192,9 +194,9 @@ def app():
 
     if str(resultfile) is None:
         resultfile="GSE110894_I-BET-762.h5ad"
-        result_dir= "saved/adata/" + resultfile
+        result_dir=  glob.glob("saved/adata/")[0] + resultfile
     else:
-        result_dir= "saved/adata/" + str(resultfile) + '.h5ad'
+        result_dir= glob.glob("saved/adata/")[0] + str(resultfile) + '.h5ad'
 
     adata = sc.read(result_dir)
     adata.obs['pred_group'] = ['Resistant' if int(i) == 0 else 'Sensitive' for i in adata.obs['sens_label']]

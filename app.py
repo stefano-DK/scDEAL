@@ -3,6 +3,7 @@ import gdown
 from pathlib import Path
 import streamlit as st
 import numpy as np
+import subprocess
 #import pandas as pd
 
 # Custom imports 
