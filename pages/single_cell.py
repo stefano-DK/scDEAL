@@ -221,22 +221,6 @@ def app():
 
     cm = confusion_matrix(df['sensitivity'], df['pred_group'])
 
-    # if str(resultfile2) is None:
-    #     resultfile2  = "Entinostat"
-    #     image_dir = appsbasedir + "/saved/figures/" + resultfile2 + '.jpg'
-    # else:
-    #     image_dir = appsbasedir + "/saved/figures/" + str(resultfile2) + '.jpg'
-    #     pdf = appsbasedir + "/saved/figures/" + str(resultfile2) + '.pdf'
-        
-    #     pages = convert_from_path(pdf, 500)
-        
-    #     for page in pages:
-    #         page.save(image_dir, 'JPEG')
-
-    image_dir = "saved/figures/" + str(resultfile).rsplit("_",1)[1] +'.jpg'
-    #image_dir = appsbasedir + "/saved/figures/" + str(drug) + '.jpg'
-    image = Image.open(image_dir)
-
     ######################
     # Rows of images and text in main page
     ######################
@@ -259,49 +243,18 @@ def app():
             Here we have scatter plots of single cells clustered based on their RNAseq values. Each cell color corresponds to the true (left) or predicted (right) drug sensitivity label.
         """) 
 
-    st.markdown('##')
     st.write("""
     ***
     """)
-    col1, col2, col3, col4 = st.columns([20, 5,20,10])
+    col1, col2 = st.columns([15, 20])
     with col1:
-        # st.markdown('##')
-        # st.markdown('##')
-        # st.markdown('##')
-        st.write("""
-            ### ROC curve with AUC value (top) of:
-            """)
-        st.subheader(str(resultfile).rsplit("_",1)[1])
-
-        st.markdown('##')
-        st.write("""
-            An ROC curve (receiver operating characteristic curve) is a graph showing the performance of a classification model at all classification thresholds. 
-            This curve plots two variables:
-            * True Positive Rate (TPR)
-            * False Positive Rate (FPR)
-
-            The bigger the Area Under the Curve (AUC) is, the better the model predicts. Usually one picks the threshold value on the curve providing the highest TPR with the lowest FPR.
-
-            The blue dashed line represents the baseline, or the TPR/FPR values given by random classifier.
-            """)
-        
-        st.markdown('##')
-        st.image(image, width=500)
-
-    with col3:
         st.write("""
         ### Confusion matrix of single-cell drug response prediction (Resistant vs Sensitive)
         """)
-        st.markdown('##')
         st.write("""
         * A confusion matrix is a summary of prediction results on a classification problem. The number of correct and incorrect predictions are summarized with count values and broken down by each class. \n
         * A perfect model would classify all Resistant labels as Resistant and all Sensitive labels as Sensitive.
         """)
-        st.markdown('##')
-        st.markdown('##')
-        st.markdown('##')
-        st.markdown('##')
-        st.markdown('##')
         st.markdown('##')
 
         st.plotly_chart(plot_confusion_matrix(cm), use_container_width=True)
