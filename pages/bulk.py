@@ -27,7 +27,6 @@ def app():
     ## The bulk RNAseq data model
     ***
     """)
-    study = st.sidebar.selectbox('Cancer Cell Line',["GSE110894", "GSE117872", "GSE112274", "GSE140440"])
     drug = st.sidebar.selectbox('Drug',['Cisplatin', 'I-BET-762','Tamoxifen', 'Gefitinib', 'Docetaxel'])
     dim_red = st.sidebar.selectbox('Dim. Red.',['AE', 'VAE'])
 
@@ -105,8 +104,9 @@ def app():
                 filename=os.path.join(root, file)
                 filelist2.append(Path(filename).stem)
 
+    st.subheader(str(drug))
 
-    col1, col2 = st.columns([20, 20])
+    col1, _, col3, _ = st.columns([20, 3, 20, 20])
     with col1:
         # st.markdown('##')
         # st.markdown('##')
@@ -114,7 +114,7 @@ def app():
         st.write("""
             ### ROC curve with AUC value (top) of:
             """)
-        st.subheader(str(drug))
+        
         st.write("""
             A ROC curve (receiver operating characteristic curve) is a graph showing the performance of a classification model at all classification thresholds. 
             This curve plots two variables:
@@ -124,12 +124,20 @@ def app():
             The bigger the Area Under the Curve (AUC) is, the better the model predicts. Usually one picks the threshold value on the curve providing the highest TPR with the lowest FPR.
 
             The blue dashed line represents the baseline, or the TPR/FPR values given by random classifier.
-            ***
             """)
-    
-    col1, col2, col3= st.columns([20, 20, 40])
+
+        with col3:
+            st.write("""
+           ### Precision and Recall curve.
+
+           The precision-recall curve shows the tradeoff between precision and recall for different threshold. 
+           A high area under the curve represents both high recall and high precision, where high precision relates to a low false positive rate, and high recall relates to a low false negative rate.
+            """)
+
+    col1, _, col3, _ = st.columns([20, 3, 20, 20])
 
     with col1:
         st.image(image, width=500)
-    with col2:
+
+    with col3:
         st.image(image2, width=500)

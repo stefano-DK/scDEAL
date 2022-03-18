@@ -9,7 +9,7 @@ import subprocess
 # Custom imports 
 from multipage import MultiPage
 from pages import single_cell, bulk, intro
-
+from persist import persist, load_widget_state
 #from sklearn.metrics import accuracy_score
 
 appsbasedir = os.path.dirname(os.path.realpath(__file__))
@@ -45,13 +45,25 @@ if not os.path.exists('./saved/models'):
     gdown.download_folder('https://drive.google.com/drive/folders/1HOldnGZ6ZL46bRej933AXf6JMcfV5Tjh?usp=sharing', output='./saved/models', quiet=False, use_cookies=False)
     st.warning("Model Downloads finished")
 
+def main():
+    if "page" not in st.session_state:
+        # Initialize session state.
+        st.session_state.update({
+            # Default page.
+            "page": "home"
+        })
 
-app = MultiPage()
+    page = st.sidebar.radio("Select your page", tuple(PAGES.keys()), format_func=str.capitalize)
 
-# Add all your application here
-app.add_page("INTRO", intro.app)
-app.add_page("Single Cells", single_cell.app)
-app.add_page("Tissues", bulk.app)
+    PAGES[page]()
 
-# The main app
-app.run()
+
+PAGES = {
+    "home": intro.app,
+    "tissue": bulk.app,
+    "single_cell": single_cell.app
+}
+
+if __name__ == "__main__":
+    load_widget_state()
+    main()
